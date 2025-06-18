@@ -1,0 +1,71 @@
+#!/usr/bin/logo
+; ┌────────────────────────────────────────────────────────────────────────────────────────────
+; │ Построяване и начертаване на крива на Хилберт или Мур от какъв да е ред
+; │ (центърът и ориентацията се задават чрез костенурката при повикване на процедурата)
+; └────────────────────────────────────────────────────────────────────────────────────────────
+
+; unit и dir са от draw.curve и са видими тук чрез непрякото (през hilbert или moore) повикване
+to amove :d
+  case modulo (:d - :dir + 4) 4 [[[1] right 90] [[3] left 90]]
+  forward :unit
+  make "dir :d
+end
+
+to hilbert :n :u :r :d :l
+  if :n > 0 [hilbert :n - 1 :r :u :l :d]
+  amove :u
+  if :n > 0 [hilbert :n - 1 :u :r :d :l]
+  amove :r
+  if :n > 0 [hilbert :n - 1 :u :r :d :l]
+  amove :d
+  if :n > 0 [hilbert :n - 1 :l :d :r :u]
+end
+
+to moore :n :u :r :d :l
+  if :n > 0 [hilbert :n - 1 :l :u :r :d]
+  amove :u
+  if :n > 0 [hilbert :n - 1 :l :u :r :d]
+  amove :r
+  if :n > 0 [hilbert :n - 1 :r :d :l :u]
+  amove :d
+  if :n > 0 [hilbert :n - 1 :r :d :l :u]
+  amove :l
+end
+
+to draw.curve :curve.type :n :unit
+  localmake "dir 0
+  localmake "offset :unit * ((power 2 :n) - 0.5)
+  penup
+  back :offset left 90 forward (ifelse :curve.type = "hilbert [:offset] [0.5 * :unit]) right 90
+  pendown
+  (invoke :curve.type :n 0 1 2 3)
+end
+
+; Примери. Редът на кривата се изписва близо до центъра ѝ
+
+clean window setbackground 7 setpensize 4 setlabelheight 30 hideturtle
+make "sz 30
+setpencolor 1
+penup setxy -850 380 setheading 0 draw.curve "hilbert 0 :sz
+penup setxy -730 380 setheading 0 draw.curve "hilbert 1 :sz
+penup setxy -522 380 setheading 0 draw.curve "hilbert 2 :sz
+penup setxy -642  -5 setheading 0 draw.curve "hilbert 3 :sz
+penup setheading 90 setpencolor 0
+setxy -850-:sz/4 380-0.75*:sz label 0
+setxy -730-:sz/4 380-0.75*:sz label 1
+setxy -522-:sz/4 380-0.75*:sz label 2
+setxy -642-:sz/4  -5-0.75*:sz label 3
+setpencolor 9
+penup setxy -300 380 setheading 0 draw.curve "moore 0 :sz
+penup setxy -180 380 setheading 0 draw.curve "moore 1 :sz
+penup setxy   28 380 setheading 0 draw.curve "moore 2 :sz
+penup setxy  -92  -5 setheading 0 draw.curve "moore 3 :sz
+penup setheading 90 setpencolor 0
+setxy -300-:sz/4 380-0.75*:sz label 0
+setxy -180-:sz/4 380-0.75*:sz label 1
+setxy   28-:sz/4 380-0.75*:sz label 2
+setxy  -92-:sz/4  -5-0.75*:sz label 3
+setpencolor 10
+penup setxy 550 130 setheading -10 draw.curve "moore 4 18
+
+ignore readlist bye

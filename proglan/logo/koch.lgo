@@ -1,0 +1,31 @@
+#!/usr/bin/logo
+; ┌────────────────────────────────────────────────────────────────────────────────────────────
+; │ Крива и снежинка на Koch
+; └────────────────────────────────────────────────────────────────────────────────────────────
+to koch :a :n
+  ifelse :n = 0 ~
+    [forward :a] ~
+    [koch :a/3 :n-1
+     left 60
+     koch :a/3 :n-1
+     right 120
+     koch :a/3 :n-1
+     left 60
+     koch :a/3 :n-1]
+end
+
+to snowflake :a :n
+  lt  60  koch :a :n
+  rt 120  koch :a :n
+  rt 120  koch :a :n
+end
+
+clean window penup right 90
+
+; back 400 pendown ht
+; koch 750 4
+
+back 250 pendown ht
+snowflake 400 4
+
+ignore readlist bye

@@ -1,0 +1,14 @@
+# От книгата The Icon programming language, 2nd ed. (R. E. Griswold, M. T. Griswold).
+
+# Извежда два начални къса от редицата на Фибоначи.
+# Редицата се поражда от безкраен генератор в съизраз.
+# От повикванията на съизраза на свой ред са образувани
+# два генератора, „отрязани“ с дадените дължини.
+
+procedure main()
+  Fib := create (i := 0 & j := 1) | |((j :=: i) +:= i)
+  every writes(|@Fib,' ')   \16
+  write("\n     ...plus...")
+  every writes(|@Fib,' ')   \7
+  write()
+end

@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+<head>
+<meta content="text/html" charset="utf-8" http-equiv="content-Type"></meta>
+<title>Булев калкулатор</title>
+<style type="text/css">
+input {font-size:30px; font-family:monospace; border:1px solid; border-color:#0000ff; background-color:#d8d8ff; color:#000088;}
+p.table {font-size:16px; font-family:monospace; margin-top:-.3ex; color:#0000c0;}
+p.gegalkine {font-size:20px; font-family:Ubuntu,sans-serif; color:#0000c0;}
+pre {font-size:14px; font-family:monospace; line-height:1.4;}
+span.in {font-size:20px;}
+</style>
+
+<script type="text/javascript">
+// операции, брой аргументи, тежест, превод
+var ops = {'=':[2,6,'=='],'→':[2,5,'<='],'⊕':[2,4,'!='],'∨':[2,3,'||'],'∧':[2,2,'&&'],'¬':[1,-1,'!']}
+var numargs = 0, weight = 1, code = 2
+var gega = {'=':'xor([].concat(0,a,b))',
+            '→':'xor([].concat(0,a,cart(a,b)))',
+            '⊕':'xor([].concat(a,b))',
+            '∨':'xor([].concat(a,b,cart(a,b)))',
+            '∧':'xor([].concat(cart(a,b)))',
+            '¬':'xor([].concat(0,b))'}
+
+function infix_to_postfix(expr) {            // преобразуване на низ – инфиксен израз в низ – суфиксен израз
+  var result = {}
+  var opstack = []
+  var c = 0
+  var left
+  var postf = ''
+  expr = expr.replace(/\s+/g,'')
+  if (expr == '') return ''
+  for (var x of '('+expr+')') {   // за всеки елемент на израза
+    if (x == '>') x = '→'
+    if (x == '+') x = '⊕'
+    if (x == '|') x = '∨'
+    if (x == '&') x = '∧'
+    if (x == '~') x = '¬'
+    if (x == '(') {
+      opstack.push(x)
+      left = true
+    } else if (x == ')') {
+      if (left) {c = -1; break}
+      for (;;) {                             // извличане от стека до достигане на '('
+        var t = opstack.pop()
+        if (t == '(') break
+        if (t == undefined)
+          c = -1
+        else {
+          c += 1-ops[t][numargs]
+          if (c > 0) postf += t
+        }
+        if (c <= 0) break
+      }
+      if (c <= 0) break
+    } else if (x in ops) {             // x е операция
+      var w = ops[x][weight]
+      for (;;) {                             // извличане от стека на по-леки операции
+        var t = opstack[opstack.length-1]
+        if (t == '(' || Math.abs(w) < Math.abs(ops[t][weight])
+                     || Math.abs(w) == Math.abs(ops[t][weight]) && w < 0) break
+        opstack.pop()
+        c += 1-ops[t][numargs]
+        if (c <= 0) {c = -1; break}
+        postf += t
+      }
+      if (c < 0) break
+      opstack.push(x)
+    } else if (/[01a-z]/.test(x)) {    // x е стойност
+      postf += x
+      if (/[a-z]/.test(x)) result[x] = 0
+      ++c
+    } else {                           // x е неправилна литера
+      c = 0; break
+    }
+    left = x == '('
+  }
+  result.names = Object.keys(result).sort().join('')
+  result.postf = postf
+  return opstack.length == 0 && (c == 0 || c == 1) ? result : undefined
+}
+
+function varload(e,v) {
+  for (var i=e.names.length-1; i>=0; --i,v=Math.floor(v/2))
+    e[e.names[i]] = v%2
+}
+
+function evaluate(e) {
+  var s = []
+  for (var x of e.postf) {
+    if (x==0 || x==1)
+      s.push(1*x)
+    else if (/[a-z]/.test(x))
+      s.push(e[x])
+    else {
+      var t = ops[x][code]+s.pop()
+      if (ops[x][numargs] == 2)
+        t = s.pop()+t
+      s.push(1*eval(t))
+    }
+  }
+  return s[0]
+}
+
+function cart(a,b) {
+  var m = a.length, n = b.length, c = []
+  for (var i=0; i<m; ++i)
+    for (var j=0; j<n; ++j)
+      c.push(a[i]|b[j])
+  return c
+}
+
+function xor(a) {
+  var n,i,j
+  a.sort()
+  for (n=a.length-1,i=j=0; j<n;)
+    if (a[j+1]==a[j])
+      j += 2
+    else {
+      if (i < j) a[i] = a[j]
+      ++i, ++j
+    }
+  if (j == n) {
+    if (i < j) a[i] = a[j]
+    ++i
+  }
+  a.length = i
+  return a
+}
+
+function gegalkine(e) {
+  var v = {}
+  for (var i in e.names)
+    v[e.names[i]] = [1<<i]
+  var s = [], a, b
+  for (var x of e.postf) {
+    if (x==0)
+      s.push([])
+    else if (x==1)
+      s.push([0])
+    else if (/[a-z]/.test(x))
+      s.push(v[x])
+    else {
+      b = s.pop()
+      if (ops[x][numargs] == 2)
+        a = s.pop()
+      s.push(eval(gega[x]))
+    }
+  }
+  s = s[0]
+  for (var i in s)
+    if (s[i] == 0)
+      s[i] = '1'
+    else {
+      a = ''
+      for (var j=0; j<e.names.length; ++j)
+        if (s[i] & (1<<j))
+          a += e.names[j]
+      s[i] = a
+    }
+  if (s.length == 0) return '0'
+  s.sort(function(a,b){return a.length!=b.length ? a.length-b.length : a<b ? -1 : 1})
+  return s.join(' ⊕ ')
+}
+
+function doit(s) {
+  var t = document.getElementById('gegalkine')
+  while (t.firstChild != null)
+    t.removeChild(t.firstChild)
+  var t = document.getElementById('table')
+  while (t.firstChild != null)
+    t.removeChild(t.firstChild)
+//
+  var r = infix_to_postfix(s)
+  if (r == '') return
+  else if (r == undefined)
+    t.appendChild(document.createTextNode('неправилен израз'))
+  else if (r.names == '')
+    t.appendChild(document.createTextNode(evaluate(r)))
+  else {
+    var table = {}
+    for (var x of r.names) table[x] = [x+' │']
+    table.val = ['◊ │']
+    var p = 1<<r.names.length
+    for (var i=0; i<p; ++i) {
+      varload(r,i)
+      var k = i
+      for (var j=r.names.length-1; j>=0; --j,k=Math.floor(k/2))
+        table[r.names[j]].push(k%2)
+      table.val.push(evaluate(r))
+    }
+//
+    t.appendChild(document.createElement('br'))
+    for (var x of r.names) {
+      t.appendChild(document.createTextNode(table[x].join(' ')))
+      t.appendChild(document.createElement('br'))
+    }
+    t.appendChild(document.createTextNode('──┼'+Array(2*p+1).join('─')))
+    t.appendChild(document.createElement('br'))
+    t.appendChild(document.createTextNode(table.val.join(' ')))
+    var t = document.getElementById('gegalkine')
+    t.appendChild(document.createTextNode('Полином на Жегалкин:  '+gegalkine(r)))
+  }
+}
+</script>
+</head>
+
+<body>
+<pre>не: <span class="in">~ ¬</span>      и: <span class="in">&amp; ∧</span>      или: <span class="in">| ∨</span>      изключващо или: <span class="in">+ ⊕</span>      импликация: <span class="in">&gt; →</span>      равно: <span class="in">=</span>      (в този ред на предимство)
+променливи: <span class="in">a</span>…<span class="in">z</span>      константи: <span class="in">0 1</span>      скоби: <span class="in">( )</span></pre>
+<p><input type="input" size="50" autofocus onchange="doit(this.value)"></p>
+<p id="table" class="table"></p>
+<p id="gegalkine" class="gegalkine"></p>
+</body>
+</html>

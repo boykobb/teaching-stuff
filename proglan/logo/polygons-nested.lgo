@@ -1,0 +1,32 @@
+#!/usr/bin/logo
+; ┌────────────────────────────────────────────────────────────────────────────────────────────
+; │ Построяване и начертаване на вписани правилни n-ъгълници по зададени n, радиус r,
+; │ ъгъл alpha на завъртане „срещу часовника“ при вписването и общ брой k на многоъгълниците
+; │ (центърът и ориентацията се задават чрез костенурката при повикване на процедурата)
+; └────────────────────────────────────────────────────────────────────────────────────────────
+to polygons.nested :n :r :alpha :k
+  (local "phi "p "h "vs)
+  make "phi 180 / :n
+  make "p pos
+  make "h heading
+  penup
+  repeat :k [
+    right :phi back :r
+    make "vs []
+    repeat :n [queue "vs pos
+               forward :r left 2 * :phi back :r]
+    queue "vs pop "vs
+    setpos last :vs
+    pendown repeat :n [setpos pop "vs] penup
+    make "r (cos :phi) / (cos :alpha - :phi) * :r
+    make "h :h - :alpha
+    setpos :p setheading :h
+  ]
+end
+
+; Пример
+
+clean window hideturtle setpensize 3 setbackground 7 setpencolor 0 penup
+setxy 0 150 setheading 30 polygons.nested 6 250 10 20
+
+ignore readlist bye

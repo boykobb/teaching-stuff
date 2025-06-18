@@ -1,0 +1,96 @@
+#!/usr/bin/logo
+; ┌────────────────────────────────────────────────────────────────────────────────────────────
+; │ Обхождане на дърво: образуване на редица от (стойностите на) всички или на избрана част
+; │ от възлите на дървото.
+; │ Дървото или е празно (не съдържа възли), или е непразно и тогава има корен (главен възел)
+; │ и (възможно празно) множество от непразни дървета, наследници на корена.
+; │ Представяме дърветата чрез редици: празното дърво се представя чрез празна редица,
+; │ а непразното – чрез редица, на която първият член задава стойност на корена, а останалите
+; │ членове, ако такива има, представят дърветата наследници на корена.
+; └────────────────────────────────────────────────────────────────────────────────────────────
+to preorder :tree       ; префиксно обхождане
+  output ifelse (count :tree) <= 1 ~
+           [:tree] ~
+           [fput first :tree map.se "preorder butfirst :tree]
+end
+
+to postorder :tree      ; суфиксно обхождане
+  output ifelse (count :tree) <= 1 ~
+           [:tree] ~
+           [lput first :tree map.se "postorder butfirst :tree]
+end
+
+to intersperse :x :as
+  output reduce `[[u v] sentence :u fput ,[quoted :x] :v] :as
+end
+
+to inorder :tree        ; обобщение на инфиксно обхождане
+  output cond [[[(count :tree) <= 1] :tree]
+               [[(count :tree) = 2] fput first :tree inorder last :tree]
+               [else intersperse first :tree map "inorder butfirst :tree]]
+end
+
+to leaves :tree         ; обхождане на листата (възлите без наследници)
+  output ifelse (count :tree) <= 1 [:tree] [map.se "leaves butfirst :tree]
+end
+
+to forest.levels :ts    ; редица от слоевете на „гора“ (редица от дървета)
+  if empty? :ts [output []]
+  output fput map "first :ts forest.levels map.se "butfirst :ts
+end
+
+to tree.levels :tree    ; редица от слоевете на дърво
+  output forest.levels (list :tree)
+end
+
+to paths :tree
+  if empty? :tree [output []]
+  if empty? butfirst :tree [output (list :tree)]
+  output map [fput first :tree ?] map.se "paths butfirst :tree
+end
+
+to tree.print :tr [:r]
+  localmake "n ifelse empty? :r [0] [first :r]
+  repeat :n [type "|    |]
+  print first :tr
+  foreach butfirst :tr [(tree.print ?1 (:n + 1))]
+end
+
+to tree.print' :tr [:p []] [:r "false]
+  foreach :p [type ?1]
+  print first :tr
+  if not empty? :p [make "p lput ifelse :r ["|    |] ["|\|   |] butlast :p]
+  localmake "hs butfirst :tr
+  if not empty? :hs [
+    localmake "p' lput "|\|__ | :p
+    foreach butlast :hs [(tree.print' ?1 :p')]
+    (tree.print' last :hs :p' "true)
+  ]
+end
+
+; Примери
+
+setfont "|Iosevka SS12 Extended| settextsize 12
+
+make "tr [a [b [e] [f [j]]] [c] [d [g] [h] [i]]]
+
+print preorder :tr
+print postorder :tr
+print inorder :tr
+print leaves :tr
+print paths :tr
+print tree.levels :tr
+tree.print' :tr
+
+; Дърво, представящо израз.
+
+make "ari [+ [* [2] [k]] [? [& [= [sin [a]] [s]] [< [p] [q]]] [f [m]] [g [~ [* [u] [v]]]]]]
+
+print "
+print preorder :ari
+print postorder :ari
+print inorder :ari
+print leaves :ari
+tree.print' :ari
+
+ignore readlist bye

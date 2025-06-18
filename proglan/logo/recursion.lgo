@@ -1,0 +1,38 @@
+#!/usr/bin/logo
+; ┌────────────────────────────────────────────────────────────────────────────────────────────
+; │ Три примера на рекурсия
+; └────────────────────────────────────────────────────────────────────────────────────────────
+to palindrome :xs               ; симетрична ли е редицата
+  if (count :xs) < 2 [output "true]
+  output and (first :xs) = (last :xs) palindrome butfirst butlast :xs
+end
+
+to polynomial :cs :x            ; пресмятане на полином (по метода на Хорнър)
+  localmake "c last :cs
+  localmake "cs' butlast :cs
+  if empty? :cs' [output :c]
+  output (polynomial :cs' :x) * :x + :c
+end
+
+to flatten :xs                  ; получаване на плоска редица от редица; за аргумент дума – тази дума
+  if or empty? :xs word? :xs [output :xs]
+  output sentence flatten first :xs flatten butfirst :xs
+end
+
+; Примери
+
+setfont "|Ubuntu Mono| settextsize 16
+
+show palindrome "abracadabra                    ; невярно
+show palindrome apply "word [a mene me nema]    ; вярно
+show palindrome [100]                           ; вярно
+show palindrome 100                             ; невярно
+
+show polynomial [10] 44         ; 10
+show polynomial [2 -3 7] 5      ; 42
+show polynomial [2 3 -5 1] 2    ; 19
+
+print flatten [[a [b]] [[[c d] e] f] g [h [[i j]]]]
+print flatten "|two by three|   ; една дума
+
+ignore readlist bye

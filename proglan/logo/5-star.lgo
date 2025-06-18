@@ -1,0 +1,33 @@
+#!/usr/bin/logo
+; ┌────────────────────────────────────────────────────────────────────────────────────────────
+; │ Построяване на петолъчна звезда (или обобщение) по зададени радиус и полуъгъл на лъча
+; │ (центърът и ориентацията се задават чрез костенурката при повикване на процедурата)
+; └────────────────────────────────────────────────────────────────────────────────────────────
+to star5 :r :phi
+  localmake "beta 180 / 5
+  localmake "a (sin :beta) / (sin :phi + :beta) * :r
+  penup
+  forward :r
+  right :phi
+  localmake "u 180 - 2 * :phi
+  localmake "v :u - 2 * :beta
+  pendown
+  repeat 5 [right :u forward :a left :v forward :a]
+  penup
+  left :phi back :r setheading 90 back 20 setheading 0 back 15 setheading 90 setpencolor 0 label :phi
+end
+
+; Примери. Големината на полуъгъла се изписва към всяка фигура
+
+clean window setbackground 7 penup hideturtle setpensize 4 setlabelheight 25
+setxy -630  350 setheading 0 setpencolor  1 star5 65 0
+setxy -330  350 setheading 0 setpencolor 10 star5 65 18
+setxy  -30  350 setheading 0 setpencolor  4 star5 65 30
+setxy  270  350 setheading 0 setpencolor  1 star5 65 54
+setxy  570  350 setheading 0 setpencolor 10 star5 65 72
+setxy -640   70 setheading 0 setpencolor  4 star5 65 90
+setxy -270   70 setheading 0 setpencolor  1 star5 65 126
+setxy   80   70 setheading 0 setpencolor 10 star5 65 162
+setxy  425   70 setheading 0 setpencolor  4 star5 65 150
+
+ignore readlist bye

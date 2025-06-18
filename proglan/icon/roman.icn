@@ -1,0 +1,23 @@
+# Образува и извежда запис с римски цифри на цели положителни числа.
+# Числата се четат от стандартния вход, по едно на ред, до изчерпване на входа.
+# За всяко число десетичните цифри се извличат една по една, от старшите към младшите,
+# и за всяка в резултата се дописва нейното съответствие в римски цифри от списъка equiv.
+# Всеки път преди това вече записаните в резултата римски цифри се заменят с по-големи –
+# все едно умножаваме с 10.
+
+procedure main()
+  local n
+  while n := read() do
+    write(roman(n)|"cannot convert")
+end
+
+procedure roman(n)
+  local arabic, result
+  static equiv
+  initial equiv := ["","I","II","III","IV","V","VI","VII","VIII","IX"]
+  integer(n) > 0 | fail
+  result := ""
+  every arabic := !n do
+    result := map(result,"IVXLCDM","XLCDM**") || equiv[arabic+1]
+  if find("*",result) then fail else return result
+end

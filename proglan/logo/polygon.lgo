@@ -1,0 +1,25 @@
+#!/usr/bin/logo
+; ┌────────────────────────────────────────────────────────────────────────────────────────────
+; │ Построяване и начертаване на правилен многоъгълник по зададени брой страни и радиус
+; │ (центърът и ориентацията се задават чрез костенурката при повикване на процедурата)
+; └────────────────────────────────────────────────────────────────────────────────────────────
+to polygon :n :r
+  localmake "phi 180 / :n
+  localmake "vs []
+  penup
+  right :phi back :r
+  repeat :n [queue "vs pos
+             forward :r left 2 * :phi back :r]
+  queue "vs pop "vs
+  setpos last :vs
+  pendown repeat :n [setpos pop "vs] penup
+end
+
+; Пример
+
+clean window hideturtle setbackground 7 setpensize 5 penup
+setxy -540 130 setheading 90 setpencolor  1 polygon 3 220  ; 90° CW
+setxy  -40 130 setheading 45 setpencolor  4 polygon 4 200  ; 45° CW
+setxy  460 130 setheading -5 setpencolor 10 polygon 5 200  ;  5° CCW
+
+ignore readlist bye

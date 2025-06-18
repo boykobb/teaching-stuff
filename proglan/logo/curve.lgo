@@ -1,0 +1,42 @@
+#!/usr/bin/logo
+; ┌──────────────────────────────────────────────────────────────────────────────────────────
+; │ Начертаване на алгебрична крива, зададена във форма на Бернщайн – чрез начупена линия.
+; │ Броят на звената на начупената задава степента на кривата: 1 – права, 2 – парабола и т.н.
+; └──────────────────────────────────────────────────────────────────────────────────────────
+to draw.polyline :ps
+  penup setpos first :ps pendown
+  foreach :ps "setpos
+end
+
+to midpoint :a :b
+  output list ((first :a) + (first :b)) / 2 ((last :a) + (last :b)) / 2
+end
+
+to midpolyline :ps
+  output (map "midpoint (butlast :ps) (butfirst :ps))
+end
+
+to curve :ps :n
+  output ifelse :n = 0 ~
+           [list first :ps last :ps] ~
+           [localmake "pss (list :ps)
+            repeat (count :ps) - 1 [queue "pss midpolyline last :pss]
+            sentence curve map "first :pss :n - 1 ~
+                     butfirst curve reverse map "last :pss :n - 1]
+end
+
+; Рисуваме двете начупени: дадената и получената като приближение на кривата
+to curve.example :ps
+  localmake "vs curve :ps 5
+  setpensize 4 setpencolor 15 draw.polyline :ps
+  setpensize 4 setpencolor  1 draw.polyline :vs
+end
+
+; Примери – криви от степени 2, 3 и 4
+
+clean window hideturtle setbackground 7
+curve.example [[-270 440] [-695 200] [-155 140]]
+curve.example [[-10 20] [690 200] [-110 270] [490 20]]
+curve.example [[-695 -120] [-635 60] [-455 120] [-245 0] [-155 -180]]
+
+ignore readlist bye

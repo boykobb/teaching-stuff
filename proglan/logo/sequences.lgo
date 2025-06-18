@@ -1,0 +1,107 @@
+#!/usr/bin/logo
+; ┌────────────────────────────────────────────────────────────────────────────────────────────
+; │ Действия с редици и низове.
+; │ Всяка от процедурите може да работи както с редица, така и с низ (дума)
+; └────────────────────────────────────────────────────────────────────────────────────────────
+to frot :xs             ; циклично изместване към началото
+  queue :xs pop :xs
+end
+
+to lrot :xs             ; циклично изместване към края
+  push :xs last thing :xs
+  make :xs butlast thing :xs
+end
+
+to swap.halves :xs :n   ; размяна на начален участък с дължина n или краен участък с дължина -n с остатъка от редицата
+  localmake "k ifelse :n > 0 [:n] [:n + count thing :xs]
+  repeat :k [frot :xs]
+end
+
+to take :n :xs          ; редица от първите n (n >= 0) или последните -n (n < 0) члена на дадената
+  if :n = 0 [output ifelse word? :xs ["] [[]]]
+  if :n < 0 [output drop :n + count :xs :xs]
+  output fput first :xs take :n - 1 butfirst :xs
+end
+
+to drop :n :xs          ; редица от членовете на дадената след първите n (n >= 0) или преди последните -n (n < 0)
+  if :n = 0 [output :xs]
+  if :n < 0 [output take :n + count :xs :xs]
+  output drop :n - 1 butfirst :xs
+end
+
+to set.of :xs           ; редица от членовете на дадената без повторения
+  if empty? :xs [output :xs]
+  localmake "x first :xs
+  output fput :x set.of remove :x butfirst :xs
+end
+
+; Три форми на една зависимост:
+; remdup ≡ reverse set.of reverse
+; set.of ≡ reverse remdup reverse
+; reverse set.of ≡ remdup reverse
+
+to accum.fd :f :xs [:r]  ; обхождане с натрупване от началото към края на редицата
+  if not empty? :r [output accum.fd :f fput first :r :xs]
+  localmake "x first :xs
+  localmake "xs' butfirst :xs
+  if empty? :xs' [output :x]
+  output accum.fd :f fput (invoke :f :x first :xs') butfirst :xs'
+end
+
+to accum.bk :f :xs [:r]  ; обхождане с натрупване от края към началото на редицата
+  if not empty? :r [output accum.bk :f lput first :r :xs]
+  localmake "x first :xs
+  localmake "xs' butfirst :xs
+  if empty? :xs' [output :x]
+  output (invoke :f :x accum.bk :f :xs')
+end
+
+; Примери
+
+setfont "|Ubuntu Mono| settextsize 16
+
+make "a [1 2 3 4 5 6 7]
+frot "a show :a
+lrot "a show :a
+swap.halves "a 3 show :a
+swap.halves "a -5 show :a
+
+show take 2 "abcdefgh
+show take -2 "abcdefgh
+show drop 2 "abcdefgh
+show drop -2 "abcdefgh
+
+show set.of "abracadabra
+show set.of [5 3 5 1 4 4 1 4]
+
+make "a [8 1 -4 6]
+show (accum.fd "sum :a 1000)
+show accum.fd "difference :a
+show accum.bk "difference :a
+show accum.bk "lput "abcde
+show 100 * accum.bk "lput 123
+
+to length :xs
+  output (accum.fd [[n x] :n + 1] :xs 0)
+end
+;
+show length [2 3 5 8]
+show length "abcde
+
+to polynomial :cs :x
+  output accum.fd `[[u v] :u * ,:x + :v] :cs
+end
+;
+show polynomial [10] 44
+show polynomial [2 -3 7] 5
+show polynomial [2 3 -5 1] 2
+
+to cfract :as
+  output accum.bk [[u v] :u + 1 / :v] :as
+end
+;
+show (1 + sqrt 5) / 2 - cfract [1 1 1 1 1 1 1]
+show (sqrt 2)         - cfract [1 2 2 2 2 2 2]
+show (exp 1)          - (1 + 2 * cfract [0 1 6 10 14 18 22])
+
+ignore readlist bye

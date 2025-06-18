@@ -1,0 +1,30 @@
+#!/usr/bin/logo
+; За двуаргументна функция – прилагане към първия аргумент.
+; Резултатът е едноаргументна функция от втория аргумент на дадената функция.
+to apply.1 :f :x
+  output `[[y] (invoke ,[quoted :f] ,[quoted :x] :y)]
+end
+
+; За двуаргументна функция – прилагане към втория аргумент.
+; Резултатът е едноаргументна функция от първия аргумент на дадената функция.
+to apply.2 :f :y
+  output `[[x] (invoke ,[quoted :f] :x ,[quoted :y])]
+end
+
+; Функция – композиция на две дадени (едноаргументни) функции.
+to compose :f :g
+  output `[[x] invoke ,[quoted :f] invoke ,[quoted :g] :x]
+end
+
+; Примери.
+make "h.1 apply.1 [[x y] 2*:x+:y] 5
+show invoke :h.1 2
+make "h.2 apply.2 [[x y] 2*:x+:y] 5
+show invoke :h.2 2
+
+make "h compose "minus "sin
+show invoke :h 45
+show invoke compose "minus "sin 45
+show invoke compose "minus [[x] 5*:x] 45
+show invoke compose [[x] x+100] "sin 45
+show invoke compose [[x] x+100] [[x] 5*:x] 45
