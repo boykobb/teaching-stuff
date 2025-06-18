@@ -1,0 +1,122 @@
+%!PS-Adobe-2.0
+%%BoundingBox: 0 0 596 842
+%%Creator: B.B.Bantchev
+%%Pages: 1
+
+% a sample label for a music CD
+
+%%Page: 1 1
+/1mm  72 25.4 div  def
+
+1mm dup scale
+
+/puttitle  {  % four-string-array
+  aload pop
+  gsave
+    4 -1 roll
+    show
+  grestore  gsave
+    3 1 roll
+    7 -3.5 rmoveto
+    fital (\253) show show (\273) show fbase
+    dup length 0 gt  {
+      2 0 rmoveto (\() show show (\)) show
+    }  {pop}  ifelse
+    (,) show
+    2 0 rmoveto show
+  grestore
+}  def
+
+/alltitles  {  % array-of-four-string-arrays
+  gsave
+  fbase
+  currentpoint translate
+  dup length 1 sub 0 1 3 -1 roll  {
+    gsave
+    4 0 moveto
+    2 copy
+    1 add 2 string cvs dup stringwidth pop neg 0 rmoveto show
+    1 0 rmoveto (\264) show 1 0 rmoveto
+    exch get puttitle
+    grestore
+    0 -7.5 translate
+  }  for
+  pop
+  grestore
+}  def
+
+/tit1  (David Coverdale)  def
+/tit2  (Greatest Ballads)  def
+
+/contents  [
+[ (Mistreated)
+    (Deep Purple)  (Burn)    (1974) ]
+
+[ (Soldier of Fortune)
+    (Deep Purple)  (Stormbringer) (1974) ]
+
+[ (You Keep on Moving)
+    (Deep Purple)  (Come Taste the Band)  (1975) ]
+
+[ (Gipsy)
+    (Deep Purple)  (Stormbringer) (1974) ]
+
+[ (Help Me thro' the Day)
+    (Whitesnake)  (Lovehunter)  (1979) ]
+
+[ (Blindman)
+    (Whitesnake)  (Ready and Willing)  (1979) ]
+
+[ (Love Man)
+    (Whitesnake)  (Ready and Willing)  (1979) ]
+
+[ (Crying in the Rain)
+    (Whitesnake)  (Saints and Sinners)  (1982) ]
+
+[ (Is This Love)
+    (Whitesnake)  (1987)  (1987) ]
+
+[ (Looking for Love)
+    (Whitesnake)  (1987)  (1987) ]
+
+[ (Sailing Ships)
+    (Whitesnake)  (Slip of the Tongue)  (1989) ]
+
+[ (Take me for a Little While)
+    () (Coverdale/Page)  (1993) ]
+
+[ (Don't Leave Me This Way)
+    () (Coverdale/Page)  (1993) ]
+
+[ (We Wish You Well)
+    (Whitesnake)  (Lovehunter)  (1979) ]
+]  def
+
+/fbase {/Palatino-Roman 3 selectfont} def
+/fital {/Palatino-Italic 3 selectfont} def
+
+10 280 translate
+-90 rotate
+
+.2 setlinewidth
+
+0 0 121 121 rectstroke
+
+gsave
+/Palatino-Roman 13 selectfont
+11 70 moveto  tit1 show
+/Palatino-Roman 10 selectfont
+25 48 moveto  tit2 show
+grestore
+
+121 0 translate
+0 0 121 121 rectstroke
+
+15 109 translate
+0 0 moveto
+contents alltitles
+
+%%Trailer
+showpage
+quit
+%%EOF

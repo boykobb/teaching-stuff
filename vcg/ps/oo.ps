@@ -1,0 +1,93 @@
+%!PS-Adobe-2.0
+%%BoundingBox: 0 0 596 842
+
+/go-main <<
+
+/objects  <<
+% Обобщена процедура за създаване на г.о. – образува масив от типа (име) и построителните параметри на обекта.
+  /create { [ 3 1 roll 2 add 2 roll ] }
+
+  /pline  <<      % процедури за начупена
+    /go-create {1 create}
+    /mkpath {
+      newpath
+      aload pop
+      {aload pop /moveto load exec -0 2 /lineto put}
+      forall
+      pop
+    }
+    dup dup 3 get dup dup 5 exch put cvx 3 exch put cvx
+    /go-draw {mkpath stroke}
+    /go-fill {mkpath fill}
+  >>
+
+  /circle  <<     % процедури за кръг
+    /go-create {3 create}
+    /mkpath {newpath aload pop 0 360 arc closepath pop}
+    /go-draw {mkpath stroke}
+    /go-fill {mkpath fill}
+    /go-move {
+      dup 1 get 4 -1 roll add 1 index 1 3 -1 roll put
+      dup 2 get 3 -1 roll add 2 exch put
+    }
+    /go-rotate {}
+    /go-scale {dup 3 get 3 -1 roll mul 3 exch put}
+  >>
+
+  /rectangle  <<  % процедури за правоъгълник
+    /go-create {5 create}
+    /go-draw {aload pop matrix currentmatrix 6 1 roll 5 -2 roll translate rotate 0 0 4 2 roll rectstroke setmatrix pop}
+    /go-fill {aload pop matrix currentmatrix 6 1 roll 5 -2 roll translate rotate 0 0 4 2 roll rectfill setmatrix pop}
+  >>
+>>  % objects
+
+% Изпълнява go-create със същите параметри в подречника на objects, специфичен за съответния вид обект.
+/go-create {dup objects dup begin exch get begin go-create end end}
+
+% За всяко от имената образува в стека по две стойности – името и копие от процедурата, в което /. е заместено с името.
+% Така в речника go-main се задават „глобални“ процедури със съответните имена.
+% Всяка такава процедура има за аргумент г.о. (масив) и изпълнява процедурата със същото име в подречника за съответния обект.
+[/go-draw /go-fill /go-move /go-rotate /go-scale]
+{
+  {dup 0 get objects dup begin exch get begin /. load cvx exec end end}
+  dup length array copy
+  dup 9 3 index put cvx
+}
+forall
+
+>> def  % go-main
+
+% Примери.
+
+2.83 dup scale
+0 140 translate
+.7 setlinewidth
+
+% Построяване на обекти в go-main и поставяне върху стека.
+go-main begin
+  [[30 30] [70 40] [110 90] [50 110]] /pline go-create
+  70 30 20 /circle go-create
+  70 40 100 60 20 /rectangle go-create
+end
+
+% Извличане от стека и именуване на обектите.
+/r exch def
+/c exch def
+/p exch def
+
+% Възпроизвеждане и рисуване на обектите.
+go-main begin
+  0 .8 .8 setrgbcolor
+  p go-fill
+  1 .8 0 setrgbcolor
+  c go-fill
+  1 0 0 setrgbcolor
+  r go-draw
+
+  0 0 1 setrgbcolor
+  70 0 c go-move
+  c go-fill
+  2 c go-scale
+  0 .8 0 setrgbcolor
+  c go-draw
+end

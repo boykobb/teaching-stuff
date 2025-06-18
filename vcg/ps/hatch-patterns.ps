@@ -1,0 +1,162 @@
+%!PS-Adobe-2.0
+%%BoundingBox: 0 0 596 842
+%%Pages: 1
+
+% запълване на текущото предизображение с шаблон
+% (щриховането с прави линии е частен случай)
+
+/Fill-Patt  {   % Tx Ty ъгъл-на-завъртане хаотичност процедура-шаблон
+  gsave
+  /Patt exch def
+  /Rand-Mode exch def
+  rotate
+  /dy   exch def
+  /dx   exch def
+  usertime srand
+  pathbbox  /y2 exch def  /x2 exch def  /y1 exch def  /x1 exch def
+  initclip clip
+  newpath
+  x1 dx sub y1 dy sub translate
+  x2 x1 sub dx div 1.5 add ceiling cvi
+    y2 y1 sub dy div 1.5 add ceiling cvi  {
+      gsave
+      dup
+      {gsave
+       Rand-Mode 0 ne
+       {rand Rand-Mode mod Rand-Mode div 360 mul rotate}  if
+       Patt cvx exec
+       grestore
+       dx 0 translate
+      }  repeat
+      grestore
+      0 dy translate
+    }  repeat
+    pop
+    stroke
+  grestore
+}  def
+
+
+% -----------------------------------------------------------------------------
+
+% Примерни процедури-шаблони за използване с Fill-Patt:
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/Fill-Lines  {          %  дължина  разстояние  ъгъл-на-наклон  регулярно/хаотично
+  /A  3 index  def
+  /L  4 index  def
+  {L -2 div A 2 div moveto   L 0 rlineto   stroke}
+  Fill-Patt
+}  def
+
+/Fill-Angles  {         %  страна-на-ъгъла  ъгъл-на-наклон  регулярно/хаотично
+  2 index dup   5 1 roll
+  /L  exch  def
+  {L 2 div dup neg exch moveto   0 L neg rlineto   L 0 rlineto   stroke}
+  Fill-Patt
+}  def
+
+/Fill-Brick  {          %  x-размер  y-размер  ъгъл-на-наклон
+  3 1 roll
+  /B  exch  def
+  /A  exch  def
+  0  A  B dup add  4 2 roll
+  {A 0 moveto   0 0 lineto   0 B lineto   A 0 rlineto
+   A 2 div neg 0 rmoveto   0 B rlineto   stroke
+  }
+  Fill-Patt
+}  def
+
+/Fill-Hexg  {           %  страна-на-6-ъгълника  ъгъл-на-наклон
+  exch
+  /A  exch  def
+  0  A 3 mul  A 3 sqrt mul  4 2 roll
+  {-60 rotate  A 0 translate
+   0 0 moveto
+   120 rotate
+   5  {A 0 translate  0 0 lineto  60 rotate}  repeat
+   60 rotate  A 0 translate  -60 rotate  A 0 moveto  A 0 rlineto
+   stroke
+  }
+  Fill-Patt
+}  def
+
+/Fill-Worm  {           %  радиус-на-дъгата  ъгъл-на-наклон  регулярно/хаотично
+  {4} {0} ifelse
+  3 -1 roll
+  /A  exch  def
+  A dup add  dup  4 2 roll
+  {2  {gsave   A A translate   0 0 A 180 270 arc   stroke   grestore
+       180 rotate
+   }  repeat
+  }
+  Fill-Patt
+}  def
+
+% -----------------------------------------------------------------------------
+
+% Примери за използване на шаблоните от по-горе:
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/1mm  2.83  def
+
+1mm dup scale
+
+.3 setlinewidth
+
+
+/Circle  {2 index 1 index add 2 index moveto 0 360 arc closepath}  def
+
+/Path  {
+  0 0 35 Circle
+  reversepath
+  5 8 20 Circle
+}  def
+
+
+gsave
+60 230 translate
+Path
+5 3 45 0 Fill-Lines
+stroke
+grestore
+
+gsave
+150 230 translate
+Path
+5 3 0 4 Fill-Lines
+stroke
+grestore
+
+gsave
+60 150 translate
+Path
+5 0 4 Fill-Angles
+stroke
+grestore
+
+gsave
+150 150 translate
+Path
+10 5 0 Fill-Brick
+stroke
+grestore
+
+gsave
+60 70 translate
+Path
+5 0 Fill-Hexg
+stroke
+grestore
+
+gsave
+150 70 translate
+Path
+3 0 true Fill-Worm
+stroke
+grestore
+
+%%Trailer
+showpage
+quit
+%%EOF

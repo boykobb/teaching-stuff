@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" onload="init(evt)">
+  <title>Диалогово създаване и редактиране на SVG</title>
+  <defs>
+    <script type="text/ecmascript"><![CDATA[
+      const svgns = 'http://www.w3.org/2000/svg'
+      const pr1 = document.createTextNode('Избери място за нов връх; последния избран връх за край')
+      const pr2 = document.createTextNode('Избери връх или страна за преместване')
+      const pr3 = document.createTextNode('Избери ново място')
+
+      var nvrts, state, cobj, pos
+
+      // Обектът с дадено име, т.е. атрибут id.
+      var objnamed = function(s) {return document.getElementById(s)}
+
+      // Присвоява на обекта o атрибути с имена и стойности от a. Възможно назначава на o родителски обект (parent).
+      var setattrs = function(o,a) {
+        for (var x in a) {
+          var v = a[x]
+          if (x == 'parent') v.appendChild(o)
+          else o.setAttribute(x,v)
+        }
+      }
+
+      // Създава нов обект от тип стойността на s (circle, line). Ако са зададени атрибути и|или родител, присвоява ги.
+      var create = function(s,a) {
+        var o = document.createElementNS(svgns,s)
+        if (a !== undefined) setattrs(o,a)
+        return o
+      }
+
+      // Стойността (низ) на атрибута s на обекта o.
+      var attr = function(o,s) {return o.getAttribute(s)}
+
+      // Стойността на атрибута s на обекта o като реално число.
+      var fattr = function(o,s) {return parseFloat(attr(o,s))}
+
+      // Координатите на мишката при дадено събитие.
+      var mcoords = function(e) {return {x:e.clientX,y:e.clientY}}
+
+      // Поставя текст, посочващ какво действие да се извърши.
+      var prompt = function(s) {
+        var o = objnamed('prompt')
+        o.replaceChild(s,o.firstChild)
+      }
+
+      // Задава начални стойности. Изпълнява се веднъж, при зареждане на файла в браузъра.
+      var init = function(evt) {
+        nvrts = 0
+        state = 'adding'
+        objnamed('prompt').appendChild(pr1)
+      }
+
+      // Създава връх и скачена с него страна, променя другата страна.
+      var addPart = function(m) {
+        ++nvrts
+        create('circle', {'parent':objnamed('points'), 'id':'p'+nvrts, 'r':'1.5mm', 'cx':m.x, 'cy':m.y})
+        create('line', {'parent':objnamed('lines'), 'id':'s'+nvrts, 'x1':m.x, 'y1':m.y, 'x2':attr(objnamed('p1'),'cx'), 'y2':attr(objnamed('p1'),'cy')})
+        setattrs(objnamed('s'+(1+(2*nvrts-2)%nvrts)), {'x2':m.x, 'y2':m.y})
+      }
+
+      // Премества посочения преди това cobj – връх или страна – и скачените с него.
+      var movePart = function(m) {
+        var n = attr(cobj,'id').substring(1)
+        if (attr(cobj.parentNode,'id') == 'points') {           // преместваме връх и скачените с него две страни
+          setattrs(cobj,{'cx':m.x,'cy':m.y})
+          setattrs(objnamed('s'+n),{'x1':m.x,'y1':m.y})
+          setattrs(objnamed('s'+(1+(parseInt(n)+nvrts-2)%nvrts)),{'x2':m.x,'y2':m.y})
+        } else if (attr(cobj.parentNode,'id') == 'lines') {     // преместваме страна, скачените с нея два върха и скачените с тях други две страни
+          var x = m.x-pos.x
+          var y = m.y-pos.y
+          pos.x = m.x
+          pos.y = m.y
+          setattrs(cobj,{'x1':fattr(cobj,'x1')+x,'y1':fattr(cobj,'y1')+y,'x2':fattr(cobj,'x2')+x,'y2':fattr(cobj,'y2')+y})
+          var o = objnamed('p'+n)
+          setattrs(o, {'cx':fattr(o,'cx')+x, 'cy':fattr(o,'cy')+y})
+          o = objnamed('s'+(1+(parseInt(n)+nvrts-2)%nvrts))
+          setattrs(o, {'x2':fattr(o,'x2')+x, 'y2':fattr(o,'y2')+y})
+          n = 1+parseInt(n)%nvrts
+          o = objnamed('p'+n)
+          setattrs(o, {'cx':fattr(o,'cx')+x, 'cy':fattr(o,'cy')+y})
+          o = objnamed('s'+n)
+          setattrs(o, {'x1':fattr(o,'x1')+x, 'y1':fattr(o,'y1')+y})
+        }
+      }
+
+      // Премахва последните връх и страна в края на построяването.
+      var remLast = function() {
+        objnamed('points').removeChild(objnamed('p'+nvrts))
+        objnamed('lines').removeChild(objnamed('s'+nvrts))
+        --nvrts
+        setattrs(objnamed('s'+nvrts),{'x2':attr(objnamed('p1'),'cx'),'y2':attr(objnamed('p1'),'cy')})
+      }
+
+      // Реагира на преместване на мишката при влачене на връх или страна.
+      var mover = function(evt) {
+        movePart(mcoords(evt))
+      }
+
+      // Реагира на щракане върху правоъгълника работно поле за избиране на първи връх.
+      var areaClicker = function(evt) {
+        if (state == 'adding' && nvrts == 0) {
+          addPart(mcoords(evt))
+          addPart(mcoords(evt))                 // създават се два върха, вторият започва да се влачи
+          cobj = objnamed('p2')
+          pos = mcoords(evt)
+          objnamed('drawing-area').addEventListener('mousemove',mover)
+        }
+      }
+
+      // Реагира на щракане върху връх или страна.
+      var objClicker = function(evt) {
+        var p = mcoords(evt)
+        if (state == 'adding' && attr(evt.target,'id') == 'p'+nvrts) {  // добавяне на връх
+          var o = objnamed('p'+(nvrts-1)), x = fattr(o,'cx'), y = fattr(o,'cy')
+          if (Math.hypot(x-p.x,y-p.y) > 5) {                            // посоченото място не е при последния връх
+            addPart(mcoords(evt))
+            cobj = objnamed('p'+nvrts)
+            pos = mcoords(evt)
+          } else {                                                      // посочен е последният връх, завършваме построяването
+            objnamed('drawing-area').removeEventListener('mousemove',mover)
+            remLast()
+            state = 'free'
+            prompt(pr2)
+          }
+        } else if (state == 'free') {                                   // посочени са връх или страна за местене
+          cobj = evt.target
+          pos = mcoords(evt)
+          setattrs(cobj,{'opacity':0.4})
+          state = 'moving'
+          prompt(pr3)
+          objnamed('drawing-area').addEventListener('mousemove',mover)
+        } else if (state == 'moving') {                                 // местенето е завършило, влаченето се прекратява
+          objnamed('drawing-area').removeEventListener('mousemove',mover)
+          setattrs(cobj,{'opacity':1})
+          prompt(pr2)
+          state = 'free'
+        }
+      }
+    ]]></script>
+  </defs>
+  <text x="1mm" y="8mm" font-family="sans-serif" font-size="7mm" fill="black">Построяване и изменяне на многоъгълник</text>
+  <rect id="drawing-area" x="1mm" y="12mm" width="200mm" height="120mm" fill="lightgray" stroke="black" stroke-width="0.5mm" onclick="areaClicker(evt)"/>       <!-- правоъгълник работно поле -->
+  <g id='lines' style="stroke:blue; stroke-width:1.0mm; opacity:1" onclick="objClicker(evt)"/>                                                                  <!-- група – множеството от страни -->
+  <g id='points' style="fill:rgb(220,0,220); stroke-width:0.7mm; opacity:1" onclick="objClicker(evt)"/>                                                         <!-- група – множеството от върхове -->
+  <text id='prompt' x="1mm" y="140mm" font-family="sans-serif" font-style="italic" font-size="5mm" fill="darkgreen"/>                                           <!-- поле за изписване на очаквано действие -->
+</svg>

@@ -1,0 +1,65 @@
+%%!PS-Adobe-2.0
+
+% Правата през никои две точки i, j не съдържа точката 0.
+
+/succ-vec {   % x1 y1 x2 y2 -> (y1 < 0 & y2 > 0) | (y1.y2 > 0 & x1.y2 < x2.y1)
+  dup 0 gt 3 index 0 lt and {
+    pop pop pop pop true
+  } {
+    dup 3 index mul 0 gt 5 1 roll
+    4 -1 roll mul 3 1 roll mul lt and
+  } ifelse
+} def
+
+/sort2-vec {
+  4 copy succ-vec {4 2 roll} if
+} def
+
+/find-min {
+  counttomark 2 gt {
+    sort2-vec
+    counttomark 1 add 2 roll
+    find-min
+  } if
+} def
+
+/min-up-sort {
+  counttomark 2 eq {
+    3 -1 roll pop
+  } {
+    counttomark 1 add mark exch 1 roll
+    find-min 3 -1 roll pop
+    counttomark 1 add 2 roll
+    min-up-sort
+  } ifelse
+} def
+
+/do-vectors {
+  counttomark 2 eq {
+    pop pop pop
+  } {
+    2 copy 6 -2 roll
+    exch 4 -1 roll sub 3 1 roll
+    exch sub
+    counttomark 1 add 2 roll
+    do-vectors
+  } ifelse
+} def
+
+28.3 dup scale
+9 15 translate
+.1 setlinewidth
+
+[ 4 4 -3 1 0 -4 -1 7 1 2 0 0   % примерна редица от точки x_i y_i и отправната точка x_0 y_0
+
+2 copy translate            % преместване на к.с. в точката x_0 y_0
+0 0 .2 0 360 arc fill       % окръжност-точка в началото на к.с.
+
+counttomark 2 add mark dup 3 -1 roll 2 roll   % поставяне на два нови маркера до основния
+do-vectors    % образуване на вектори чрез изваждане на x_0 y_0 от всички точки
+min-up-sort   % подреждане на векторите
+
+/pline {counttomark 0 gt {lineto pline} if} def
+moveto pline stroke                            % чертане на начупена по краищата на векторите
+
+pop   % премахване на маркера

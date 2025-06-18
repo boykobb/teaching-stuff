@@ -1,0 +1,27 @@
+%!PS-Adobe-2.0
+%%BoundingBox: 0 0 596 842
+
+% x y k -> k.x k.y
+/2*1 {dup 4 -1 roll mul 3 1 roll mul} def
+
+% x1 y1 x2 y2 -> x1+x2 y1+y2
+/2+2 {exch 4 -1 roll add 3 1 roll add} def
+
+28.3 dup scale
+4 17 translate
+
+.03 setlinewidth
+
+/p0 {0 0} def  /p1 {4 9} def  /p2 {11 7} def  /p3 {13 0} def
+
+.7 setgray
+p0 moveto p1 lineto p2 lineto p3 lineto stroke
+p0 p1 2+2 .5 2*1 moveto p1 p2 2+2 .5 2*1 lineto p2 p3 2+2 .5 2*1 lineto stroke
+p0 .25 2*1 p1 .5 2*1 2+2 p2 .25 2*1 2+2 moveto p1 .25 2*1 p2 .5 2*1 2+2 p3 .25 2*1 2+2 lineto stroke
+p0 moveto p3 lineto stroke
+p0 p3 2+2 .5 2*1 moveto p1 p2 2+2 .5 2*1 lineto stroke
+p0 p1 p2 p3 2+2 2+2 2+2 .25 2*1 .11 0 360 arc closepath fill
+.07 setlinewidth 0 0 1 setrgbcolor
+% Делящата наполовина точка като кръгче:
+% p0 p3 2+2 p1 p2 2+2 3 2*1 2+2 .125 2*1 .11 0 360 arc closepath fill
+p0 moveto p1 p2 p3 curveto stroke

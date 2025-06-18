@@ -1,0 +1,98 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 150 277 446 573
+%%Title: (clock.eps)
+%%Creator: B.B.Bantchev
+%%CreationDate: 25.4.1996
+%%EndComments
+
+40 dict  begin
+
+/MoFont  {
+  3 -1 roll  findfont
+  dup length dict
+  begin
+  {1 index /FID ne {def} {pop pop} ifelse}  forall
+  /FontMatrix  exch  def
+  currentdict
+  end
+  definefont  pop
+}  bind def
+
+/1mm 2.835 def
+
+1mm 1mm scale
+
+%       -75 -250 translate  2.6 2.6 scale
+
+%--------------------------------------------------------
+%  Any or all coords(mm)/sizes(mm)/others may be changed:
+%--------------------------------------------------------
+/X  105 def     % x-coordinate of the circle's centre
+/Y  150 def     % y-coordinate of the circle's centre
+/R   50 def     % (big) circle's radius
+/r   12 def     % (small) empty circle's radius
+/W    2 def     % circle's width
+/w   .2 def     % width of the radii
+/H    5 def     % vertical size (height) of the numbers
+/Dt   2 def     % empty space between a number and the circle
+/Db   2 def     % empty space between a number and the corresponding radius
+/Numerals-Font /Palatino-Roman def  % ...
+                % ... font name for numerals
+/Arabic-Numerals false def  % ...
+                % ... whether to use arabic or roman numerals
+/Xsf  .5  def   % `horizontal' shrink coefficient for the numerals
+/Arms  true def % whether to visualize hour & minute arms
+
+                % Iff Arms is true, the following parameters also apply:
+Arms  {
+  /hw 3.5 def   /hf  30 def   /hr   6 def  % width, main, rear lengths of H-arm
+  /mw 2.5 def   /mf  40 def   /mr   7 def  % width, main, rear lengths of M-arm
+  /Ar  .5 def                              % central axis' radius
+  /Hour  8  def  /Minute  17  def         % time to be displayed
+}  if
+%----------------------------------------------------------------------------
+
+Numerals-Font /NewFont  [.001 Xsf mul 0 0 .001 0 0]  MoFont
+
+/NewFont H .7 div selectfont
+
+0 setgray
+
+X Y translate
+
+W setlinewidth
+0 0 R 0 360 arc closepath stroke
+
+/D  R W 2 div sub Dt sub H sub  def
+w setlinewidth
+Arabic-Numerals
+{[(12) (1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11)]}
+{[(XII) (I) (II) (III) (IV) (V) (VI) (VII) (VIII) (IX) (X) (XI)]}
+ifelse
+{0 r moveto  0 D Db sub lineto  stroke
+ dup stringwidth pop 2 div neg D moveto  show
+ -30 rotate
+}  forall
+
+Arms  {
+  1 setlinecap
+
+  Hour Minute
+
+  6 mul  /D exch def
+  gsave
+  D neg rotate
+  mw setlinewidth
+  0 mr neg moveto  0 mf lineto stroke
+  grestore
+
+  12 mod 30 mul D 12 div add neg rotate
+  hw setlinewidth
+  0 hr neg moveto  0 hf lineto stroke
+
+  1 setgray  0 0 Ar 0 360 arc fill
+}  if
+
+end
+
+%%EOF

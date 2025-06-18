@@ -1,0 +1,38 @@
+%!PS-Adobe-2.0
+%%BoundingBox: 0 0 596 842
+
+% x y k -> k.x k.y
+/2*1 {dup 4 -1 roll mul 3 1 roll mul} def
+
+% x1 y1 x2 y2 -> x1+x2 y1+y2
+/2+2 {exch 4 -1 roll add 3 1 roll add} def
+
+% Построяване на квадратична крива (парабола) във форма на Бернщайн/Безие.
+% Управляващи точки са текущата позиция x0 y0 на писеца и зададените като аргументи x1 y1 и x2 y2.
+% Кривата се построява като частен случай на кубична: такава, за която средните две от четирите
+% управляващи точки са върху отсечките P0P1 и P2P1 и ги делят в отношение 2:1.
+/qurveto {
+  2 copy 6 -2 roll 2 2*1                % x2 y2 x2 y2 2.x1 2.y1
+  2 copy currentpoint 2+2 1 3 div 2*1   % x2 y2 x2 y2 2.x1 2.y1 (2.x1+x0)/3 (2.y1+y0)/3
+  8 2 roll 2+2 1 3 div 2*1 4 2 roll     % (2.x1+x0)/3 (2.y1+y0)/3 (2.x1+x2)/3 (2.y1+y2)/3 x2 y2
+  gsave 0 .75 0 setrgbcolor
+  6 copy 6 -2 roll lineto 4 2 roll lineto lineto stroke
+  grestore
+  curveto
+} def
+
+% Пример.
+28.3 dup scale
+5 18 translate
+
+.03 setlinewidth
+
+/p0 {0 0} def /p1 {12 9} def /p2 {8 0} def
+
+.7 setgray
+p0 moveto p1 lineto p2 lineto stroke
+p1 moveto p0 p2 2+2 .5 2*1 lineto stroke
+p0 p1 2+2 .5 2*1 moveto p1 p2 2+2 .5 2*1 lineto stroke
+p0 moveto p0 p2 2+2 .25 2*1 p1 .5 2*1 2+2 lineto p2 lineto closepath stroke
+.07 setlinewidth 0 0 1 setrgbcolor
+p0 moveto p1 p2 qurveto stroke

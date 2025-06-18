@@ -1,0 +1,22 @@
+%----Разменяне на членовете с дадени индекси в масив--------
+/aswap {   % a i j --
+  2 index exch
+  4 copy get 3 1 roll get exch
+  4 1 roll put put
+} def
+
+%----Подреждане на масив чрез отделяне на най-голям елемент-
+/max-up-sort {   % a -> a
+  dup length 1 sub -1 1 {    % a i
+    dup dup 1 sub -1 0 {     % a i m j
+      3 index 2 copy exch get exch 3 index get  % a i m j a_j a_m
+      gt {exch} if pop                          % a i m
+    } for   % a i m
+    2 copy eq {pop pop} {2 index 3 1 roll aswap} ifelse
+  } for   % a
+} def
+
+%----Пример-------------------------------------------------
+[ 3 6 3 6 8 1 3 ] max-up-sort ==
+ 
+quit

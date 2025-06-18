@@ -1,0 +1,42 @@
+%!PS-Adobe-3.0 EPSF-3.0
+
+/1mm 2.83 def
+
+1mm dup scale
+
+.2 setlinewidth
+
+/drawpoly {
+  /n exch def           % брой многоъгълници
+  /y exch def           % център
+  /x exch def           % ...
+  /phi exch def         % ъгъл на вписване
+  /r exch def           % радиус на външния многоъгълник
+  /N exch def           % брой страни на многоъгълника
+
+  /g 180 N div def
+  /a g sin r mul 2 mul def
+  /k g cos g phi sub cos div def
+  /m g matrix rotate
+     0 r neg matrix translate matrix concatmatrix
+     g neg matrix rotate matrix concatmatrix
+     def
+  /ra g dup add def
+
+  /km matrix def
+
+  gsave
+  x y translate
+  n {km currentmatrix
+     m concat
+     0 0 moveto N {a 0 translate 0 0 lineto ra rotate} repeat
+     stroke
+     setmatrix phi rotate k dup scale
+    } repeat
+  grestore
+} def
+
+3 20 15 35 250 20 drawpoly      % 3-ъгълник
+4 20 15 80 250 20 drawpoly      % 4-ъгълник
+5 20 15 125 250 30 drawpoly     % 5-ъгълник
+6 20 15 170 250 40 drawpoly     % 6-ъгълник

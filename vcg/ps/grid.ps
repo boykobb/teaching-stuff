@@ -1,0 +1,32 @@
+%!PS-Adobe-3.0 EPSF-3.0
+
+/grid {        % ширина височина бр.кл.x бр.кл.y   (w h nx ny)
+  matrix currentmatrix 5 1 roll
+  currentpoint translate
+  4 -1 roll 2 index div 4 -1 roll 2 index div scale
+  newpath       % nx ny
+  2 copy
+  1 add dup 3 1 roll
+% nx ny ny+1 nx ny+1
+  {0 0 moveto dup 0 lineto 0 1 translate}
+  dup 7 1 roll
+  repeat
+% proc nx ny ny+1 nx
+  exch neg translate
+  90 rotate
+  exch          % ny nx
+  1 add 3 -1 roll repeat
+  pop
+  setmatrix
+} def
+
+2.83 dup scale          % установяване на милиметров мащаб
+
+.3 setlinewidth
+
+20 100 moveto
+120 160 11 8 grid stroke
+1 0 0 setrgbcolor
+.8 setlinewidth
+20 100 moveto
+120 160 2 3 grid stroke

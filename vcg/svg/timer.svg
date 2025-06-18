@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" baseProfile="full"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="140" height="140" viewBox="0 0 166 166">
+  <desc>timer</desc>
+  <defs>
+    <circle id="sxs" cx="0" cy="75.4" r="1.5" stroke-width=".1" fill="#808080"/>
+  </defs>
+  <g id="timer" transform="translate(83 83) scale(1 1)">
+    <circle cx="0" cy="0" r="80" fill="white" stroke="#606060" stroke-width="5"/>
+    <use xlink:href="#sxs" transform="rotate(354)"></use>
+    <use xlink:href="#sxs" transform="rotate(348)"></use>
+    <use xlink:href="#sxs" transform="rotate(342)"></use>
+    <use xlink:href="#sxs" transform="rotate(336)"></use>
+    <use xlink:href="#sxs" transform="rotate(324)"></use>
+    <use xlink:href="#sxs" transform="rotate(318)"></use>
+    <use xlink:href="#sxs" transform="rotate(312)"></use>
+    <use xlink:href="#sxs" transform="rotate(306)"></use>
+    <use xlink:href="#sxs" transform="rotate(294)"></use>
+    <use xlink:href="#sxs" transform="rotate(288)"></use>
+    <use xlink:href="#sxs" transform="rotate(282)"></use>
+    <use xlink:href="#sxs" transform="rotate(276)"></use>
+    <use xlink:href="#sxs" transform="rotate(264)"></use>
+    <use xlink:href="#sxs" transform="rotate(258)"></use>
+    <use xlink:href="#sxs" transform="rotate(252)"></use>
+    <use xlink:href="#sxs" transform="rotate(246)"></use>
+    <use xlink:href="#sxs" transform="rotate(234)"></use>
+    <use xlink:href="#sxs" transform="rotate(228)"></use>
+    <use xlink:href="#sxs" transform="rotate(222)"></use>
+    <use xlink:href="#sxs" transform="rotate(216)"></use>
+    <use xlink:href="#sxs" transform="rotate(204)"></use>
+    <use xlink:href="#sxs" transform="rotate(198)"></use>
+    <use xlink:href="#sxs" transform="rotate(192)"></use>
+    <use xlink:href="#sxs" transform="rotate(186)"></use>
+    <use xlink:href="#sxs" transform="rotate(174)"></use>
+    <use xlink:href="#sxs" transform="rotate(168)"></use>
+    <use xlink:href="#sxs" transform="rotate(162)"></use>
+    <use xlink:href="#sxs" transform="rotate(156)"></use>
+    <use xlink:href="#sxs" transform="rotate(144)"></use>
+    <use xlink:href="#sxs" transform="rotate(138)"></use>
+    <use xlink:href="#sxs" transform="rotate(132)"></use>
+    <use xlink:href="#sxs" transform="rotate(126)"></use>
+    <use xlink:href="#sxs" transform="rotate(114)"></use>
+    <use xlink:href="#sxs" transform="rotate(108)"></use>
+    <use xlink:href="#sxs" transform="rotate(102)"></use>
+    <use xlink:href="#sxs" transform="rotate(96)"></use>
+    <use xlink:href="#sxs" transform="rotate(84)"></use>
+    <use xlink:href="#sxs" transform="rotate(78)"></use>
+    <use xlink:href="#sxs" transform="rotate(72)"></use>
+    <use xlink:href="#sxs" transform="rotate(66)"></use>
+    <use xlink:href="#sxs" transform="rotate(54)"></use>
+    <use xlink:href="#sxs" transform="rotate(48)"></use>
+    <use xlink:href="#sxs" transform="rotate(42)"></use>
+    <use xlink:href="#sxs" transform="rotate(36)"></use>
+    <use xlink:href="#sxs" transform="rotate(24)"></use>
+    <use xlink:href="#sxs" transform="rotate(18)"></use>
+    <use xlink:href="#sxs" transform="rotate(12)"></use>
+    <use xlink:href="#sxs" transform="rotate(6)"></use>
+    <text x="30" y="-54" font-family="sans-serif" font-size="13">5</text>
+    <text x="49" y="-28" font-family="sans-serif" font-size="13">10</text>
+    <text x="58" y="5" font-family="sans-serif" font-size="13">15</text>
+    <text x="49" y="38" font-family="sans-serif" font-size="13">20</text>
+    <text x="25.5" y="63.5" font-family="sans-serif" font-size="13">25</text>
+    <text x="-8" y="74" font-family="sans-serif" font-size="13">30</text>
+    <text x="-41.5" y="63.5" font-family="sans-serif" font-size="13">35</text>
+    <text x="-65.5" y="37.5" font-family="sans-serif" font-size="13">40</text>
+    <text x="-74" y="5" font-family="sans-serif" font-size="13">45</text>
+    <text x="-65.5" y="-27.5" font-family="sans-serif" font-size="13">50</text>
+    <text x="-41.5" y="-52.5" font-family="sans-serif" font-size="13">55</text>
+    <text x="-8" y="-63" font-family="sans-serif" font-size="13">60</text>
+    <g id="minutes">
+      <line x1="0" y1="8" x2="0" y2="-59" stroke-width="4" stroke="black" stroke-linecap="round">
+        <animateTransform id="animin" attributeName="transform" type="rotate" begin="anisec.begin" dur="3600s" values="0;360" repeatCount="indefinite"/></line>
+    </g>
+    <circle cx="0" cy="0" r="4.5" fill="black"/>
+    <g id="seconds">
+      <line x1="0" y1="7" x2="0" y2="-70" stroke-width="1" stroke="red" stroke-linecap="round">
+        <animateTransform id="anisec" attributeName="transform" type="rotate" begin="0s" dur="60s" values="0;360" repeatCount="indefinite"/></line>
+    </g>
+    <circle cx="0" cy="0" r="2.3" fill="red"/>
+  </g>
+</svg>

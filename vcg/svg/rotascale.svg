@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" x="200" y="200" width="300" height="300" viewBox="0 0 100 100" baseProfile="full" xmlns="http://www.w3.org/2000/svg">
+<title>SVG rotate + scale declarative animation</title>
+<g transform="translate(50 50)">
+  <circle cx="0" cy="0" r="40"
+          fill="orange" stroke="black" stroke-width="1"/>
+  <text x="-3" y="-42" font-family="Helvetica" font-size="8" writing-mode="lr">
+    Я
+    <animateTransform id="a1" begin="1s" dur="10s" fill="freeze"
+                      type="rotate" values="0;-360" attributeName="transform"/>
+    <animateTransform id="a2" begin="a1.begin" dur="10s" fill="freeze" additive="sum"
+                      type="translate" values="0 0;0 -25" attributeName="transform"/>
+    <animateTransform id="a3" begin="a1.begin" dur="10s" fill="freeze" additive="sum"
+                      type="scale" values="1;0.4" attributeName="transform"/>
+  </text>
+</g>
+</svg>

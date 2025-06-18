@@ -1,0 +1,49 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 0 0 596 842
+%%Creator: B.B.Bantchev
+%%Pages: 1
+
+% a simple exercise in printing formatted text
+
+%%Page: 1 1
+/align-show  {  % w s
+  dup 0 exch  {32 eq {1 add} if}  forall
+  1 index stringwidth pop
+  4 -1 roll sub neg exch div 0 32 4 -1 roll widthshow
+}  def
+
+/drawparagraph  {  % w yoff s
+  exch neg exch
+  gsave
+  currentpoint translate
+  0 exch
+  dup length 1 sub 0 1  3 -1 roll  {
+    2 copy get 10 eq  {
+      2 copy 5 -1 roll dup 3 1 roll sub getinterval
+      0 0 moveto  4 index exch align-show
+      0 3 index translate
+      1 add exch
+    }  {
+      pop
+    }  ifelse
+  }  for
+  dup length 3 -1 roll dup 3 1 roll sub getinterval
+  0 0 moveto  show
+  pop pop
+  grestore
+}  def
+
+
+% example of use____________________________________________
+2.83 dup scale                 % 1u = 1mm
+/Times-Roman 4 selectfont      % fontsize = 4mm
+30 200 moveto                  % move to a position
+
+/text (A single quote within a compound symbol may be used\nboth with and without an escape. The general rule\nabout the use of quotes in strings and compound\nsymbols is: a quote in a sequence of characters embraced\nby the same quotes must be used with escape; if the\nembracing quotes are of the other kind, the quote can\nbe used both with, and without the escape.) def
+
+100 6 text drawparagraph
+
+%%Trailer
+showpage
+quit
+%%EOF

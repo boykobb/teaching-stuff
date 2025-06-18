@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+<head>
+<meta content="text/html" charset="utf-8" http-equiv="content-Type"></meta>
+<title>Visualizing Catalan objects</title>
+<style type="text/css">
+body  {font-size:14px; font-family:sans-serif;}
+p     {margin-top: 0px; margin-bottom: 0px;}
+input {font-family:monospace;}
+</style>
+</head>
+
+<body onload="init()">
+<script src="genparens.js" type="text/javascript" charset="utf-8"></script>
+<script src="gencats.js" type="text/javascript" charset="utf-8"></script>
+<script src="drawcats.js" type="text/javascript" charset="utf-8"></script>
+
+<p style="margin-bottom:4px">
+No. of (): <input id="rank" type="input" size="3" onchange="set_rank(this.value)">
+  +   Ordinal number of a ()-string: <input id="index" type="input" size="7" onchange="set_index(this.value)">
+      <span style="font-size:3; color:white; background-color:blue"> OR </span>       ()-string: <input id="par-string" type="input" size="26" onchange="set_par_string(this.value)">
+                <button onclick="advance(-1)"><span style="font-size:12px;font-weight:bold">←</span></button> <button onclick="advance(1)"><span style="font-size:12px;font-weight:bold">→</span></button>
+</p>
+
+<p>
+<canvas id="canvas1" width="230" height="230" style="border:1px solid #d0d0d0;"></canvas>
+<canvas id="canvas2" width="230" height="230" style="border:1px solid #d0d0d0;"></canvas>
+<canvas id="canvas3" width="230" height="230" style="border:1px solid #d0d0d0;"></canvas>
+<canvas id="canvas4" width="230" height="230" style="border:1px solid #d0d0d0;"></canvas>
+</p><p>
+<canvas id="canvas5" width="230" height="230" style="border:1px solid #d0d0d0;"></canvas>
+<canvas id="canvas6" width="230" height="230" style="border:1px solid #d0d0d0;"></canvas>
+<canvas id="canvas7" width="230" height="230" style="border:1px solid #d0d0d0;"></canvas>
+<canvas id="canvas8" width="230" height="230" style="border:1px solid #d0d0d0;"></canvas>
+</p><p>
+<code id="text"></code>
+</p>
+
+<script>
+var ctx1 = document.getElementById("canvas1").getContext("2d")
+var ctx2 = document.getElementById("canvas2").getContext("2d")
+var ctx3 = document.getElementById("canvas3").getContext("2d")
+var ctx4 = document.getElementById("canvas4").getContext("2d")
+var ctx5 = document.getElementById("canvas5").getContext("2d")
+var ctx6 = document.getElementById("canvas6").getContext("2d")
+var ctx7 = document.getElementById("canvas7").getContext("2d")
+var ctx8 = document.getElementById("canvas8").getContext("2d")
+
+var rank = 9, index = 2716, par_string, parseq
+
+function init() {
+  parseq = genparens(rank)
+  document.getElementById('rank').value = rank
+  document.getElementById('index').value = index
+  document.getElementById('par-string').value = par_string = parseq[index-1]
+  draw_all()
+}
+
+function draw_all() {
+  draw_any(ctx1,ridge,par_string)
+  draw_any(ctx2,logs,par_string)
+  draw_any(ctx3,bricks,par_string)
+  draw_any(ctx4,walk,par_string)
+  draw_any(ctx5,necklace,par_string)
+  draw_any(ctx6,staircase,par_string)
+  draw_any(ctx7,triangulation,par_string)
+  draw_any(ctx8,binary_tree,par_string)
+  var t = document.getElementById('text')
+  if (t.firstChild != null)
+    t.removeChild(t.firstChild)
+  t.appendChild(document.createTextNode(
+    btree_to_expr(parens_to_btree(par_string))
+  + '                                        '
+  + parens_to_perm(par_string).join(' ')
+  ))
+}
+
+function set_rank(n) {
+  if (n < 1) n = 1
+  if (n > 13) n = 13
+  document.getElementById('rank').value = rank = n
+  parseq = genparens(rank)
+  n = parseq.length
+  if (index > n) 
+    document.getElementById('index').value = index = n
+  document.getElementById('par-string').value = par_string = parseq[index-1]
+  draw_all()
+}
+
+function set_index(k) {
+  var n = parseq.length
+  if (k < 1) k = 1
+  if (k > n) k = n
+  document.getElementById('index').value = index = k
+  document.getElementById('par-string').value = par_string = parseq[index-1]
+  draw_all()
+}
+
+function set_par_string(s) {
+  var n = s.length, c, i
+  if (n<2 || n>2*13) return
+  for (c=0,i=0; i<n; ++i)
+    if (s[i]==='(') ++c
+    else if (s[i]===')' && c>0) --c
+    else break
+  if (i<n || c>0) return
+  n /= 2
+  par_string = s
+  document.getElementById('rank').value = rank = n
+  parseq = genparens(rank)
+  document.getElementById('index').value = index = 1+parseq.indexOf(s)
+  draw_all()
+}
+
+function advance(i) {
+  var n = index+i
+  if (n < 1) n = 1
+  if (n > parseq.length) n = parseq.length
+  if (n != index) {
+    document.getElementById('index').value = index = n
+    document.getElementById('par-string').value = par_string = parseq[index-1]
+    draw_all()
+  }
+}
+
+</script> 
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+document.documentElement        главният елемент
+
+document.createElementNS('http://www.w3.org/2000/svg','rect')
+                                                        :
+                                 ------може също 'use'--:
+
+document.createTextNode('...')    създава 'tnode' за добавяне в 'text'
+
+document.getElementById('...').getAttributeNS(null,'fill')
+                ...            setAttributeNS(null,'fill','...')
+                ...            hasAttributeNS(null,'fill')
+                ...            removeAttributeNS(null,'fill')
+                                                    :
+ подразбира се „текущото“ пространство (напр. svg)--:
+
+evt.target                      елемент
+
+elm.hasChildNodes
+elm.childNodes                  масив
+elm.childNodes.item(i)
+elm.nodeName                    тип маркер – като g, line и т.н.
+elm.firstChild
+elm.parentNode
+elm.nextSibling
+elm.previousSibling
+elm.nodeType                    елемент, атрибут, текст, cdata, „външен“ елемент (entity), коментар, документ, ...
+elm.appendChild(...)              | добавя или пренарежда
+elm.insertBefore(кое,преди-кое)   |
+elm.removeChild(...)
+elm.replaceChild(...,...)
+elm.cloneNode(false)            създава нов елемент
+                :
+ надълбоко?-----+
+
+elm.addEventListener('click', име-или-функционен-обект, false)
+                                                          :
+                                                          +------за видимост „нагоре“
+
+elm.style.setProperty('...','...','important')              стойност на стилово свойство (CSS)
+                                       :
+           предимство (може и '')------+
+
+elm.style.removeProperty('...')

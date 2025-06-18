@@ -1,0 +1,85 @@
+/1mm        2.83  def
+
+/A4-Size-y  297   def
+
+
+/Off-y          20              def
+/Off-x          40              def
+/Size-y         260             def
+/Lineskip       4.5             def
+/Font-Name      (/Bookman-Light) def
+/Font-Size      4               def
+
+/Off-y          A4-Size-y Off-y sub  def    % the actual offset from below
+
+
+/WS  {Out-File exch writestring}  def
+/Buffer-String  20 string  def
+/WN  {Buffer-String cvs WS}  def
+/1-char-string  1 string  def
+/CVCS  {1-char-string 0 3 -1 roll put 1-char-string}  def
+/WC  {Out-File exch write}  def
+
+/Init-Page  {
+  1mm WN   ( dup scale\n) WS
+  Off-x WN   ( ) WS   Off-y WN   ( translate\n) WS
+  /Pos-x  0  def   /Pos-y  0  def
+}  def
+
+/Advance-xy  {
+  {/Pos-y  Pos-y Lineskip add dup Size-y le
+   {def exit}
+   {pop pop  (showpage\n) WS  Init-Page}
+   ifelse
+  }  loop               % will loop at most twice, so as to turn the page
+}  def
+
+/Go-To-xy  {
+  Advance-xy
+  Pos-x WN   ( ) WS   Pos-y neg WN   ( moveto\n) WS
+}  def
+
+/Print-File  {                                          % the main program
+
+  save  3 1 roll
+
+  /Out-Filename  exch  def
+  /In-Filename   exch  def
+
+  /In-File   In-Filename (r) file  def
+  /Out-File  Out-Filename (w) file  def
+
+  Font-Name WS   ( ) WS   Font-Size WN   ( selectfont\n) WS
+
+  /Line  256 string  def
+
+  Init-Page
+
+  {In-File Line readline exch
+   dup length 0 eq
+   {Advance-xy pop} % for blank lines, only advance to the next writing position
+   {    % the next line prevents page turning when Line contains a sole EOF
+    dup 0 get 26 eq {pop pop exit} if
+    Go-To-xy
+    (\() WS
+    {mark  (()\\) 2 index CVCS search  {(\\) WS} if  cleartomark  WC}  forall
+    (\)) WS   ( show\n) WS
+   }
+   ifelse
+   not {exit} if
+  }  loop
+
+  Pos-y Lineskip ne  {(showpage\n) WS}  if
+  (quit\n) WS
+
+  In-File closefile
+  Out-File closefile
+
+  restore
+
+}  def
+
+
+% NB! To use the program, load this file in the interpreter,
+% then call Print-File with the names of the input and output files
+% as string arguments

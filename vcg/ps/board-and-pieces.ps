@@ -1,0 +1,42 @@
+%!PS-Adobe-2.0
+%%BoundingBox: 0 0 596 842
+
+/circle {2 index 2 index moveto 0 360 arc closepath} def     % xc yc rad
+
+% Мрежа от клетки с начало в Oxy.
+/board {                              % m n s   (брой клетки по хоризонтала и вертикала и размер на клетка)
+  matrix currentmatrix 4 1 roll
+  dup scale
+  2 copy
+  matrix currentmatrix 3 1 roll
+  1 add {0 0 moveto dup 0 lineto 0 1 translate} repeat
+  pop
+  setmatrix
+  exch 1 add {0 0 moveto dup 0 exch lineto 1 0 translate} repeat
+  pop
+  setmatrix
+} def
+
+% Разполагане на „пулове“ в клетките на мрежата.
+% Аргументи са: масив от двойки координати,
+%               размер на клетката и
+%               рaдиус (коефициент към размера на клетката).
+
+/place {
+  matrix currentmatrix 4 1 roll
+  exch dup scale
+  -.5 dup translate
+  exch {aload pop 2 index circle} forall
+  pop
+  setmatrix
+} def
+
+
+% Пример.
+2.83 dup scale
+50 200 translate
+
+.3 setlinewidth
+1 setlinecap
+7 5 10 board stroke
+[[2 3] [3 3] [4 3] [6 2] [6 3] [6 4] [5 1] [5 5]] 10 .4 place fill

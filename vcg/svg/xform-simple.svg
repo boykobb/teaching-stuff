@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+  <script type="text/ecmascript"><![CDATA[
+    var cobj;
+    function xform(evt) {
+      var o,id,s;
+      o = evt.target;
+      id = o.getAttribute('id');
+      if (cobj!=null && (id=='plus' || id=='minus' ||
+                         id=='left' || id=='right' || id=='up' || id=='down')) {
+        s = cobj.getAttribute('transform');
+        if      (id=='plus')  s += ' scale(1.1)';
+        else if (id=='minus') s += ' scale(.909)';
+        else if (id=='left')  s += ' translate(-5,0)';
+        else if (id=='right') s += ' translate(5,0)';
+        else if (id=='up')    s += ' translate(0,-5)';
+        else                  s += ' translate(0,5)';
+        cobj.setAttribute('transform',s);
+      } else if (id=='o1' || id=='o2' || id=='o3') cobj = o;
+    }
+  ]]></script>
+</defs>
+<text id="plus"  onclick="xform(evt)" x="120" y="98"  font-size="100" fill="grey">+</text>
+<text id="minus" onclick="xform(evt)" x="220" y="92"  font-size="100" fill="grey">–</text>
+<text id="left"  onclick="xform(evt)" x="295" y="80"  font-size="50"  fill="grey">◀</text>
+<text id="right" onclick="xform(evt)" x="365" y="80"  font-size="50"  fill="grey">▶</text>
+<text id="down"  onclick="xform(evt)" x="425" y="80"  font-size="50"  fill="grey">▼</text>
+<text id="up"    onclick="xform(evt)" x="480" y="80"  font-size="50"  fill="grey">▲</text>
+<circle id="o1" onclick="xform(evt)" fill="red"   opacity=".7" transform="translate(130,300)" cx="0" cy="0" r="40"/>
+<path   id="o2" onclick="xform(evt)" fill="green" opacity=".7" transform="translate(330,300)" d="M-45,40 l90,0 -45,-80"/>
+<rect   id="o3" onclick="xform(evt)" fill="blue"  opacity=".7" transform="translate(530,300)" x="-40" y="-40" width="80" height="80"/>
+</svg>
