@@ -5,7 +5,7 @@
 # За неправилно образувани редове се извежда текст error.
 # Празните редове, включително тези само от шпации и знаци за табулиране, се оставят без последствие.
 
-# За това как работи програмата виж http://www.math.bas.bg/bantchev/place/rpn/rpn.icon.html.
+# За това как работи програмата виж http://www.math.bas.bg/softeng/bantchev/place/rpn/rpn.icon.html.
 
 procedure main()
   ws := ' \t'
