@@ -6,15 +6,11 @@ encoding: utf-8
 За по-пълна и подробна информация следва да се използва описанието на езика
 и на стандартните библиотеки към него на адрес
 
-        http://r6rs.org
+        https://r6rs.org
 
 или книгата „The Scheme programming language“, 4-то изд., достъпна на адрес
 
-        http://www.scheme.com/tspl4.
-
-Други ресурси по езика Scheme са посочени на уебстраницата
-
-        http://www.math.bas.bg/bantchev/place/scheme.html
+        https://scheme.com/tspl4.
 –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 
